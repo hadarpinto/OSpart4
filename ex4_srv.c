@@ -33,48 +33,6 @@ int main(int argc, char **argv) {
 
 }
 
-void test() {
-    printf("in son\n");
-    //takecare of files
-    int fdToSrvFile = open("to_srv.txt",O_RDWR | O_APPEND | O_CREAT, 0777);
-    char clientPID[255]="", num1Char[255]="", operationChar[255]="", num2Char[255]="", *byteBuf, answerChar[255]="",toClientFileName[255]="";
-
-    readLineToArr(byteBuf, clientPID, fdToSrvFile);
-    readLineToArr(byteBuf, num1Char, fdToSrvFile);
-    readLineToArr(byteBuf, operationChar, fdToSrvFile);
-    readLineToArr(byteBuf, num2Char, fdToSrvFile);
-
-
-    if((!strcmp("4",operationChar)) && (!strcmp("0",num2Char))){
-        printf("division");
-        printf(" by zero\n");
-        strcpy(answerChar, "CANNOT_DIVIDE_BY_ZERO\n");
-    }
-    else {
-        printf("not division\n");
-        int num1Int, num2Int, operationInt, answerInt;
-        num1Int = atoi(num1Char);
-        operationInt = atoi(operationChar);
-        num2Int = atoi(num2Char);
-        answerInt = calculate(num1Int, operationInt, num2Int);
-        sprintf(answerChar,"%d\n", answerInt);
-    }
-
-    //set file name according to client
-    strcpy(toClientFileName, "to_client_");
-    strcat(toClientFileName,clientPID);
-    strcat(toClientFileName,".txt");
-
-
-    int fdClientFile = open(toClientFileName, O_CREAT | O_RDWR, 0777);
-    write(fdClientFile, answerChar, strlen(answerChar));
-    close(fdClientFile);
-    //send signal to client
-    printf("send singal to client\n");
-    int client = atoi(clientPID);
-    kill(client, SIGUSR2);
-    remove("to_srv.txt");
-}
 void signalHandler (int sig){
     int pid;
     pid = fork();
@@ -96,8 +54,6 @@ void signalHandler (int sig){
 
 
         if((!strcmp("4",operationChar)) && (!strcmp("0",num2Char))){
-            printf("division");
-            printf(" by zero\n");
             strcpy(answerChar, "CANNOT_DIVIDE_BY_ZERO\n");
         }
         else {
@@ -120,7 +76,6 @@ void signalHandler (int sig){
         write(fdClientFile, answerChar, strlen(answerChar));
         close(fdClientFile);
         //send signal to client
-        printf("send singal to client\n");
         int client = atoi(clientPID);
         kill(client, SIGUSR2);
         remove("to_srv.txt");

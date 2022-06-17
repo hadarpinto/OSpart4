@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
 }
 
 void alarmHandler(int sig){
-    printf("30 second passed, getting out... \n");
+    printf("Client closed because no response was received from the server for 30 seconds\n");
     exit(1);
 
 }

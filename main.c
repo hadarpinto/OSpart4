@@ -18,9 +18,5 @@ int main() {
  *
  *
  *  client:
- *  use atoi
- *  do pause without while 1
- *  will try to open file, when receive -1 it means that someone writes and we will try it for 10 times
- *  using getrandom with modulo 5 + 1
  *
  */

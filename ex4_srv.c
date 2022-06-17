@@ -85,12 +85,14 @@ void signalHandler (int sig){
         printf("in son\n");
         //takecare of files
         int fdToSrvFile = open("to_srv.txt",O_RDWR | O_APPEND | O_CREAT, 0777);
-        char clientPID[255]="", num1Char[255]="", operationChar[255]="", num2Char[255]="", *byteBuf, answerChar[255]="",toClientFileName[255]="";
+        char clientPID[255]="", num1Char[255]="", operationChar[255]="", num2Char[255]="", *byteBuf = 'a', answerChar[255]="",toClientFileName[255]="";
 
         readLineToArr(byteBuf, clientPID, fdToSrvFile);
+        printf("clientPID %s", clientPID);
         readLineToArr(byteBuf, num1Char, fdToSrvFile);
         readLineToArr(byteBuf, operationChar, fdToSrvFile);
         readLineToArr(byteBuf, num2Char, fdToSrvFile);
+        printf("num2Char %s", num2Char);
 
 
         if((!strcmp("4",operationChar)) && (!strcmp("0",num2Char))){
@@ -122,7 +124,7 @@ void signalHandler (int sig){
         int client = atoi(clientPID);
         kill(client, SIGUSR2);
         remove("to_srv.txt");
-
+        exit(1);
     }
     else {
 

@@ -7,11 +7,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
-#include <linux/random.h>
-#include <sys/random.h>
+
 #define MAX_CHAR 255
 #define WAIT_TIME 30
 #define NUM_TRY 10
+
 
 void signalHandler(int sig);
 void alarmHandler(int sig);

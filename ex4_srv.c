@@ -5,14 +5,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
-#include <sys/types.h>
 #include <unistd.h>
-#include <dirent.h>
 #include <sys/wait.h>
-#include <sys/stat.h>
 #include <fcntl.h>
-#include <sys/random.h>
-#include <time.h>
+
 #define MAX_CHAR 255
 #define WAIT_TIME 60
 #define ADD 1

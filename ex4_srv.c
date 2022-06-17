@@ -13,7 +13,6 @@
 #include <fcntl.h>
 #include <sys/random.h>
 #include <time.h>
-void test();
 void signalHandler (int signal);
 void alarmHandler (int signal);
 void readLineToArr(char* buf, char* arr, int fd);
@@ -40,24 +39,19 @@ void signalHandler (int sig){
         exit(1);
     }
     else if(pid == 0){
-        printf("in son\n");
         //takecare of files
         int fdToSrvFile = open("to_srv.txt",O_RDWR | O_APPEND | O_CREAT, 0777);
         char clientPID[255]="", num1Char[255]="", operationChar[255]="", num2Char[255]="", *byteBuf = 'a', answerChar[255]="",toClientFileName[255]="";
 
         readLineToArr(byteBuf, clientPID, fdToSrvFile);
-        printf("clientPID %s", clientPID);
         readLineToArr(byteBuf, num1Char, fdToSrvFile);
         readLineToArr(byteBuf, operationChar, fdToSrvFile);
         readLineToArr(byteBuf, num2Char, fdToSrvFile);
-        printf("num2Char %s", num2Char);
-
 
         if((!strcmp("4",operationChar)) && (!strcmp("0",num2Char))){
             strcpy(answerChar, "CANNOT_DIVIDE_BY_ZERO\n");
         }
         else {
-            printf("not division\n");
             int num1Int, num2Int, operationInt, answerInt;
             num1Int = atoi(num1Char);
             operationInt = atoi(operationChar);
@@ -84,8 +78,6 @@ void signalHandler (int sig){
     else {
 
     }
-
-
 
 }
 

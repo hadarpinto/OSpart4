@@ -22,14 +22,13 @@ int isDivisionByZero(char* operation, char* num2);
 int calculate(int num1, int operation, int num2);
 
 int main(int argc, char **argv) {
-//    signal(SIGUSR1, signalHandler);
-//    alarm(60);
-//    while(1) {
-//        printf("Listening.......\n");
-//        pause();
-//
-//    }
-    test(3);
+    signal(SIGUSR1, signalHandler);
+    alarm(60);
+    while(1) {
+        printf("Listening.......\n");
+        pause();
+
+    }
 }
 
 void test(int s){
@@ -92,24 +91,22 @@ void signalHandler (int sig){
     }
     else if(pid == 0){
         //takecare of files
-        printf("in son\n");
-        int fdToSrvFile = open("to_srv.txt",O_RDONLY, 0777);
+        int fdToSrvFile = open("to_srv.txt",O_RDWR | O_APPEND | O_CREAT, 0777);
         char clientPID[255]="", num1Char[255]="", operationChar[255]="", num2Char[255]="", *byteBuf, answerChar[255]="",toClientFileName[255]="";
         readLineToArr(byteBuf, clientPID, fdToSrvFile);
-        printf("client PID is %s\n",clientPID);
+
         readLineToArr(byteBuf, num1Char, fdToSrvFile);
-        printf("client PID is %s\n",num1Char);
+
         readLineToArr(byteBuf, operationChar, fdToSrvFile);
-        printf("client PID is %s\n",operationChar);
+
         readLineToArr(byteBuf, num2Char, fdToSrvFile);
-        printf("client PID is %s\n",num2Char);
-        printf("in son2\n");
+
         if (!isDivisionByZero(operationChar, num2Char)) {
             strcpy(answerChar, "CANNOT_DIVIDE_BY_ZERO\n");
 
             exit(1);
         }
-        //not a division by zero, assign answerChar with answer
+            //not a division by zero, assign answerChar with answer
         else {
             printf("calculting....\n");
             int num1Int, num2Int, operationInt, answerInt;
@@ -136,7 +133,6 @@ void signalHandler (int sig){
         printf("im at bottom handler %d\n",client);
         kill(client, SIGUSR2);
         remove("to_srv.txt");
-
     }
 
 }

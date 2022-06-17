@@ -68,11 +68,7 @@ int main(int argc, char **argv) {
 
     kill(serverID,SIGUSR1);
     printf("waiting for SIGUSR2\n");
-
-    printf("pausing............\n");
     pause();
-    printf("after pausing............\n");
-
     exit(1);
 
 

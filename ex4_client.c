@@ -9,40 +9,53 @@
 #include <signal.h>
 #include <linux/random.h>
 #include <sys/random.h>
-
+#define MAX_CHAR 255
+#define WAIT_TIME 30
+#define NUM_TRY 10
 
 void signalHandler(int sig);
 void alarmHandler(int sig);
 void readLineToArr(char* buf, char* arr, int fd);
 int main(int argc, char **argv) {
     int serverID;
+    //not enough paramsor more than
+    if (argc != 5){
+        printf("ERROR_FROM_EX4\n");
+        exit(1);
+    }
+
     serverID = atoi(argv[1]);
+
+
+
+
+
 
     signal(SIGALRM, alarmHandler);
     signal(SIGUSR2,signalHandler);
-    alarm(30);
+    alarm(WAIT_TIME);
 
     int j;
-    for(j = 1; j <= 10; j++){
+    for(j = 1; j <= NUM_TRY; j++){
         int randomWait = rand() % 6;
         sleep(randomWait);
         //make file to_srv
         int fd = open("to_srv.txt", O_CREAT | O_WRONLY | O_RDONLY | O_EXCL, 0777);
         if (fd == -1){
             if (j == 10){
-                printf("Couldnt open file... now exiting\n");
-                // intructions says to remove files... which??
+                printf("ERROR_FROM_EX4\n");
+                exit(1);
             }
             continue;
         }
 
         //insert lines
-        char pid[255];
+        char pid[MAX_CHAR];
         sprintf(pid, "%d\n", getpid());
         write(fd, pid, strlen(pid));
         int i;
         for (i = 2; i <= 4; i++) {
-            char line[255];
+            char line[MAX_CHAR];
             sprintf(line, "%s\n", argv[i]);
             write(fd, line, strlen(line));
         }
@@ -51,7 +64,6 @@ int main(int argc, char **argv) {
     }
 
     kill(serverID,SIGUSR1);
-    printf("waiting for SIGUSR2\n");
     pause();
     exit(1);
 
@@ -60,8 +72,8 @@ int main(int argc, char **argv) {
 
 void signalHandler(int sig){
     alarm(30);
-    char fileAnswer[255];
-    char answer[255];
+    char fileAnswer[MAX_CHAR];
+    char answer[MAX_CHAR];
     strcpy(fileAnswer, "to_client_");
     sprintf(fileAnswer, "%s%d", fileAnswer,getpid());
     strcat(fileAnswer,".txt");

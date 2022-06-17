@@ -13,6 +13,13 @@
 #include <fcntl.h>
 #include <sys/random.h>
 #include <time.h>
+#define MAX_CHAR 255
+#define WAIT_TIME 60
+#define ADD 1
+#define SUB 2
+#define MUL 3
+#define DIV 4
+
 void signalHandler (int signal);
 void alarmHandler (int signal);
 void readLineToArr(char* buf, char* arr, int fd);
@@ -22,26 +29,26 @@ int calculate(int num1, int operation, int num2);
 int main(int argc, char **argv) {
     signal(SIGUSR1, signalHandler);
     signal(SIGALRM, alarmHandler);
-    alarm(60);
+    alarm(WAIT_TIME);
     while(1) {
-        printf("Listening.......\n");
         pause();
         signal(SIGUSR1, signalHandler);
-        alarm(60);
+        alarm(WAIT_TIME);
     }
-
 }
 
 void signalHandler (int sig){
     int pid;
     pid = fork();
     if (pid < 0){
+        printf("ERROR_FROM_EX4\n");
         exit(1);
     }
     else if(pid == 0){
-        //takecare of files
+        //take care of files
         int fdToSrvFile = open("to_srv.txt",O_RDWR | O_APPEND | O_CREAT, 0777);
-        char clientPID[255]="", num1Char[255]="", operationChar[255]="", num2Char[255]="", *byteBuf = 'a', answerChar[255]="",toClientFileName[255]="";
+        char clientPID[MAX_CHAR]="", num1Char[MAX_CHAR]="", operationChar[MAX_CHAR]="", num2Char[MAX_CHAR]="",
+        *byteBuf = 'a', answerChar[MAX_CHAR]="",toClientFileName[MAX_CHAR]="";
 
         readLineToArr(byteBuf, clientPID, fdToSrvFile);
         readLineToArr(byteBuf, num1Char, fdToSrvFile);
@@ -92,17 +99,17 @@ void readLineToArr(char* buf, char* arr, int fd) {
 }
 int calculate(int num1, int operation, int num2){
     int sum;
-    if (operation == 1){
+    if (operation == ADD){
         return num1 + num2;
     }
-    else if (operation == 2){
+    else if (operation == SUB){
         return num1 - num2;
     }
-    else if (operation == 3){
+    else if (operation == MUL){
         sum = num1*num2;
         return sum;
     }
-    else if (operation == 4) {
+    else if (operation == DIV) {
         sum = num1/num2;
         return sum;
     }
@@ -112,10 +119,4 @@ void alarmHandler(int sig){
     while(wait(NULL) != -1){}
     exit(1);
 
-}
-int isDivisionByZero(char* operation, char* num2){
-    if(!strcmp(operation,"4") && !strcmp(num2, "0")){
-        return 1;
-    }
-    return 0;
 }
